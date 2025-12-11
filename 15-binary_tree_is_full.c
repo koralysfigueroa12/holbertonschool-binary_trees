@@ -8,18 +8,18 @@
  */
 int binary_tree_is_full(const binary_tree_t *tree)
 {
-    if (tree == NULL)
-        return (0);
+	if (tree == NULL)
+		return (0);
 
-    /* Si no tiene hijos → es "full" */
-    if (!tree->left && !tree->right)
-        return (1);
+	/* Si no tiene hijos → es "full" */
+	if (!tree->left && !tree->right)
+		return (1);
 
-    /* Si tiene un solo hijo → NO es full */
-    if ((tree->left && !tree->right) || (!tree->left && tree->right))
-        return (0);
+	/* Si tiene un solo hijo → NO es full */
+	if ((tree->left && !tree->right) || (!tree->left && tree->right))
+		return (0);
 
-    /* Si tiene dos hijos → verificar subárboles */
-    return (binary_tree_is_full(tree->left) &&
-            binary_tree_is_full(tree->right));
+	/* Si tiene dos hijos → verificar subárboles */
+	return (binary_tree_is_full(tree->left) &&
+			binary_tree_is_full(tree->right));
 }
