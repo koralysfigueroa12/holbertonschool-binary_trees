@@ -1,61 +1,58 @@
-#ifndef BINARY_TREES_H
-#define BINARY_TREES_H
-
-#include <stddef.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include "binary_trees.h"
 
 /**
- * struct binary_tree_s - Binary tree node
- *
- * @n: Integer stored in the node
- * @parent: Pointer to the parent node
- * @left: Pointer to the left child
- * @right: Pointer to the right child
+ * depth - Measures the depth of the leftmost leaf
+ * @tree: pointer to root
+ * Return: depth
  */
-typedef struct binary_tree_s
+int depth(const binary_tree_t *tree)
 {
-    int n;
-    struct binary_tree_s *parent;
-    struct binary_tree_s *left;
-    struct binary_tree_s *right;
-} binary_tree_t;
+    int d = 0;
 
-typedef struct binary_tree_s bst_t;
-typedef struct binary_tree_s avl_t;
-typedef struct binary_tree_s heap_t;
+    while (tree)
+    {
+        d++;
+        tree = tree->left;
+    }
+    return (d);
+}
 
-/* Printing function */
-void binary_tree_print(const binary_tree_t *);
+/**
+ * is_perfect_recursive - Checks if tree is perfect
+ * @tree: pointer to tree root
+ * @d: expected depth of all leaves
+ * @level: current level
+ * Return: 1 if perfect, 0 otherwise
+ */
+int is_perfect_recursive(const binary_tree_t *tree, int d, int level)
+{
+    if (!tree)
+        return (1);
 
-/* Task 0–1 */
-binary_tree_t *binary_tree_node(binary_tree_t *parent, int value);
-binary_tree_t *binary_tree_insert_left(binary_tree_t *parent, int value);
-binary_tree_t *binary_tree_insert_right(binary_tree_t *parent, int value);
+    /* If leaf */
+    if (!tree->left && !tree->right)
+        return (d == level + 1);
 
-/* Task 2–5 */
-void binary_tree_delete(binary_tree_t *tree);
-int binary_tree_is_leaf(const binary_tree_t *node);
-int binary_tree_is_root(const binary_tree_t *node);
+    /* If node has only one child → not perfect */
+    if (!tree->left || !tree->right)
+        return (0);
 
-/* Task 6–8: Traversal */
-void binary_tree_preorder(const binary_tree_t *tree, void (*func)(int));
-void binary_tree_inorder(const binary_tree_t *tree, void (*func)(int));
-void binary_tree_postorder(const binary_tree_t *tree, void (*func)(int));
+    return (is_perfect_recursive(tree->left, d, level + 1) &&
+            is_perfect_recursive(tree->right, d, level + 1));
+}
 
-/* Task 9–14: Measures */
-size_t binary_tree_height(const binary_tree_t *tree);
-size_t binary_tree_depth(const binary_tree_t *tree);
-size_t binary_tree_size(const binary_tree_t *tree);
-size_t binary_tree_leaves(const binary_tree_t *tree);
-size_t binary_tree_nodes(const binary_tree_t *tree);
-int binary_tree_balance(const binary_tree_t *tree);
+/**
+ * binary_tree_is_perfect - Checks if a tree is perfect
+ * @tree: pointer to tree root
+ * Return: 1 if perfect, 0 otherwise
+ */
+int binary_tree_is_perfect(const binary_tree_t *tree)
+{
+    int d;
 
-/* Task 15–18 */
-int binary_tree_is_full(const binary_tree_t *tree);
-binary_tree_t *binary_tree_sibling(binary_tree_t *node);
-binary_tree_t *binary_tree_uncle(binary_tree_t *node);
-binary_tree_t *binary_tree_ancestor(const binary_tree_t *first,
-                                    const binary_tree_t *second);
+    if (!tree)
+        return (0);
 
-#endif /* BINARY_TREES_H */
+    d = depth(tree);
+    return (is_perfect_recursive(tree, d, 0));
+}
